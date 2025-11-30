@@ -7,6 +7,7 @@ Example applications built with [NexaDB](https://github.com/krishcdbry/nexadb) -
 | App | Description | Stack |
 |-----|-------------|-------|
 | [NotesApp](./NotesApp) | Full-featured notes app with AI search, tags, and beautiful UI | Python + FastAPI + NexaDB |
+| [PollsAPI](./PollsAPI) | Real-time polling API with vote tracking | NestJS + TypeScript + NexaDB |
 
 ## Quick Start
 
