@@ -11,6 +11,11 @@ export class PollsController {
     return this.pollsService.findAll();
   }
 
+  @Get('categories')
+  getCategories() {
+    return this.pollsService.getCategories();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.pollsService.findOne(id);
