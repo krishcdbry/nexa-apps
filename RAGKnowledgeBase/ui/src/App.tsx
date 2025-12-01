@@ -429,7 +429,7 @@ function App() {
                     Drag & drop files here or click to browse
                   </p>
                   <p className="text-xs text-gray-500">
-                    Supports .txt, .md, .markdown
+                    Supports .pdf, .txt, .md, .markdown
                   </p>
                 </>
               )}
@@ -438,7 +438,7 @@ function App() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".txt,.md,.markdown"
+              accept=".txt,.md,.markdown,.pdf"
               multiple
               onChange={(e) => handleUpload(e.target.files)}
               className="hidden"

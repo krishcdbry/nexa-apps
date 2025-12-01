@@ -10,6 +10,7 @@ Uses NexaDB's vector search for fast semantic retrieval.
 """
 
 import os
+import io
 import uuid
 import hashlib
 from datetime import datetime
@@ -25,6 +26,7 @@ from dotenv import load_dotenv
 import tiktoken
 import openai
 from nexaclient import NexaClient
+from pypdf import PdfReader
 
 # Load environment variables
 load_dotenv()
@@ -220,7 +222,7 @@ async def upload_document(file: UploadFile = File(...)):
     """Upload and process a document."""
 
     # Validate file type
-    allowed_extensions = [".txt", ".md", ".markdown"]
+    allowed_extensions = [".txt", ".md", ".markdown", ".pdf"]
     file_ext = os.path.splitext(file.filename)[1].lower()
     if file_ext not in allowed_extensions:
         raise HTTPException(
@@ -230,10 +232,24 @@ async def upload_document(file: UploadFile = File(...)):
 
     # Read file content
     content = await file.read()
-    try:
-        text = content.decode("utf-8")
-    except UnicodeDecodeError:
-        raise HTTPException(status_code=400, detail="File must be UTF-8 encoded text")
+
+    # Extract text based on file type
+    if file_ext == ".pdf":
+        try:
+            pdf_reader = PdfReader(io.BytesIO(content))
+            text_parts = []
+            for page in pdf_reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text_parts.append(page_text)
+            text = "\n\n".join(text_parts)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {str(e)}")
+    else:
+        try:
+            text = content.decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(status_code=400, detail="File must be UTF-8 encoded text")
 
     if not text.strip():
         raise HTTPException(status_code=400, detail="File is empty")
