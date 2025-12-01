@@ -56,12 +56,14 @@ openai_client: Optional[openai.OpenAI] = None
 
 def get_client() -> NexaClient:
     """Create a fresh NexaDB client connection for each request."""
-    return NexaClient(
+    client = NexaClient(
         host=NEXADB_HOST,
         port=NEXADB_PORT,
         username=NEXADB_USER,
         password=NEXADB_PASSWORD
     )
+    client.connect()
+    return client
 
 
 def get_openai_client() -> openai.OpenAI:
