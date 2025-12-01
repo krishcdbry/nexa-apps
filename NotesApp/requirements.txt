@@ -10,12 +10,11 @@ uvicorn[standard]>=0.32.0
 # Data validation
 pydantic>=2.10.0
 
-# NexaDB Python client (from parent directory)
-# Install with: pip install -e ../../nexadb-python
-# OR just ensure nexadb_client.py is in PYTHONPATH
+# NexaDB Python client
+nexaclient>=1.0.0
 
 # Optional: For production deployment
-gunicorn==21.2.0
+gunicorn>=21.2.0
 
 # Optional: For better development experience
-python-dotenv==1.0.0
+python-dotenv>=1.0.0
