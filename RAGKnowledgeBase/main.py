@@ -13,7 +13,7 @@ import os
 import io
 import uuid
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from contextlib import asynccontextmanager
 
@@ -51,21 +51,17 @@ CHUNK_SIZE = 500  # tokens
 CHUNK_OVERLAP = 50  # tokens
 
 # Global client
-client: Optional[NexaClient] = None
 openai_client: Optional[openai.OpenAI] = None
 
 
 def get_client() -> NexaClient:
-    """Get or create NexaDB client."""
-    global client
-    if client is None:
-        client = NexaClient(
-            host=NEXADB_HOST,
-            port=NEXADB_PORT,
-            username=NEXADB_USER,
-            password=NEXADB_PASSWORD
-        )
-    return client
+    """Create a fresh NexaDB client connection for each request."""
+    return NexaClient(
+        host=NEXADB_HOST,
+        port=NEXADB_PORT,
+        username=NEXADB_USER,
+        password=NEXADB_PASSWORD
+    )
 
 
 def get_openai_client() -> openai.OpenAI:
@@ -269,7 +265,7 @@ async def upload_document(file: UploadFile = File(...)):
         "filename": file.filename,
         "chunks_count": len(chunks),
         "total_tokens": count_tokens(text),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
     }
     db.create(DOCUMENTS_COLLECTION, doc, database=DATABASE)
 
